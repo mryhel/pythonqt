@@ -6,7 +6,7 @@ isEmpty( PYTHON_VERSION ) {
   PYTHON_VERSION=$$(PYTHON_VERSION)
 }
 isEmpty( PYTHON_VERSION ) {
-  PYTHON_VERSION=3.10
+  PYTHON_VERSION=3.11
 }
 
 isEmpty( PYTHON_DIR ) {
@@ -68,6 +68,10 @@ contains(PKGCONFIG, "python.*"){
     DEBUG_EXT = 
   }
 
+  PYTHON_PATH = c:/Python311
+  PYTHON_LIB = c:/Python311/libs
+  PYTHON_VERSION=3.11
+  
   isEmpty(PYTHON_PATH):PYTHON_PATH=$(PYTHON_PATH)
   isEmpty(PYTHON_PATH)|!exists("$$PYTHON_PATH\\include") | !exists("$$PYTHON_PATH\\libs\\") {
      error("PYTHON_PATH must be set to correct folder with \\libs and \\include subfolders ")
