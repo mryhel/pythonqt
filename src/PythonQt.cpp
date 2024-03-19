@@ -77,8 +77,8 @@ static inline PyObject *PyCode_GetVarnames(PyCodeObject *o) {
 PythonQt* PythonQt::_self = nullptr;
 int       PythonQt::_uniqueModuleCount = 0;
 
-void PythonQt_init_QtGuiBuiltin(PyObject*);
-void PythonQt_init_QtCoreBuiltin(PyObject*);
+//void PythonQt_init_QtGuiBuiltin(PyObject*);
+//void PythonQt_init_QtCoreBuiltin(PyObject*);
 
 
 void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
@@ -219,8 +219,8 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
     PythonQtRegisterIntegerMapConverter(QHash, QString);
     PythonQtMethodInfo::addParameterTypeAlias("QHash<QNetworkRequest::Attribute,QVariant>", "QHash<int,QVariant>");
 
-    PythonQt_init_QtCoreBuiltin(nullptr);
-    PythonQt_init_QtGuiBuiltin(nullptr);
+//    PythonQt_init_QtCoreBuiltin(nullptr);
+//    PythonQt_init_QtGuiBuiltin(nullptr);
 
     PythonQt::self()->addDecorators(new PythonQtStdDecorators());
     PythonQt::self()->registerCPPClass("QMetaObject",nullptr, "QtCore", PythonQtCreateObject<PythonQtWrapper_QMetaObject>);
@@ -263,25 +263,25 @@ void PythonQt::init(int flags, const QByteArray& pythonQtModuleName)
 
     PyObject* pack = PythonQt::priv()->packageByName("QtCore");
     PyObject* pack2 = PythonQt::priv()->packageByName("Qt");
-    PyObject* qtNamespace = PythonQt::priv()->getClassInfo("Qt")->pythonQtClassWrapper();
-    const char* names[16] = {"SIGNAL", "SLOT", "qAbs", "qBound","qDebug","qWarning","qCritical","qFatal"
-                        ,"qFuzzyCompare", "qMax","qMin","qRound","qRound64","qVersion","qrand","qsrand"};
-    for (unsigned int i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
-      PyObject* obj = PyObject_GetAttrString(qtNamespace, names[i]);
-      if (obj) {
-        if (PyModule_AddObject(pack, names[i], obj) < 0) {
-          std::cerr << "failed to add " << names[i] << " to QtCore\n";
-        } else {
-          Py_INCREF(obj);
-        }
-        if(PyModule_AddObject(pack2, names[i], obj) < 0) {
-          Py_DECREF(obj);
-          std::cerr << "failed to add " << names[i] << " to Qt\n";
-        }
-      } else {
-        std::cerr << "method not found " << names[i] << std::endl;
-      }
-    }
+//    PyObject* qtNamespace = PythonQt::priv()->getClassInfo("Qt")->pythonQtClassWrapper();
+//    const char* names[16] = {"SIGNAL", "SLOT", "qAbs", "qBound","qDebug","qWarning","qCritical","qFatal"
+//                        ,"qFuzzyCompare", "qMax","qMin","qRound","qRound64","qVersion","qrand","qsrand"};
+//    for (unsigned int i = 0; i < sizeof(names) / sizeof(names[0]); i++) {
+//      PyObject* obj = PyObject_GetAttrString(qtNamespace, names[i]);
+//      if (obj) {
+//        if (PyModule_AddObject(pack, names[i], obj) < 0) {
+//          std::cerr << "failed to add " << names[i] << " to QtCore\n";
+//        } else {
+//          Py_INCREF(obj);
+//        }
+//        if(PyModule_AddObject(pack2, names[i], obj) < 0) {
+//          Py_DECREF(obj);
+//          std::cerr << "failed to add " << names[i] << " to Qt\n";
+//        }
+//      } else {
+//        std::cerr << "method not found " << names[i] << std::endl;
+//      }
+//    }
     int enumValues[] = {
       QtDebugMsg,
       QtWarningMsg,
@@ -959,8 +959,19 @@ PythonQtObjectPtr PythonQt::lookupObject(PyObject* module, const QString& name)
 
 PythonQtObjectPtr PythonQt::getMainModule() {
   //both borrowed
-  PythonQtObjectPtr dict = PyImport_GetModuleDict();
-  return PyDict_GetItemString(dict, "__main__");
+  
+  PythonQtObjectPtr r;
+  
+  try
+  {
+	PythonQtObjectPtr dict = PyImport_GetModuleDict();
+	r = PyDict_GetItemString(dict, "__main__");
+  }
+  catch(...)
+  {	  
+  }
+  
+  return r;
 }
 
 PythonQtObjectPtr PythonQt::importModule(const QString& name)
