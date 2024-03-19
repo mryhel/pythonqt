@@ -32,7 +32,7 @@ isEmpty(PYTHONQT_GENERATED_PATH) {
 }
 
 !exists($$PYTHONQT_GENERATED_PATH) {
-  error("No generated wrapper sources for Qt $${QT_VERSION}.\n" \
+      warning("No generated sources exist for Qt$${QT_VERSION}")
         "Looked in:\n" \
         "  - $$PWD/../generated_cpp\n" \
         "  - $$PWD/../generated_cpp_$${QT_MAJOR_VERSION}$${QT_MINOR_VERSION} (e.g., generated_cpp_515)\n" \
